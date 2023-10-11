@@ -26,11 +26,12 @@ const hint = document.getElementById("hint");
 const guess = document.querySelector(".guess");
 const resetWordBtn = document.getElementById("reset-word-btn");
 const userInput = document.querySelector(".user-input");
-const displayUserInput = document.querySelector(".display-user-input");
+const displayUserInput = document.getElementById("display-user-input");
 
 let selectedRandomWord = "";
 let selectedRandomWordHint = "";
 let remainingGuess = 5;
+let correctLetters = [];
 let wrongLetters = [];
 
 function generateRandomWord() {
@@ -62,26 +63,39 @@ function initGame(event) {
     displayUserInput.innerHTML = `"${userInput.value.toUpperCase()}"`;
     userInput.value = "";
 
-    if (remainingGuess > 0 ) {
-        if (selectedRandomWord.includes(key)) {
-              for (let i = 0; i < selectedRandomWord.length; i++) {
-                if (selectedRandomWord[i] === key) {
-                  boxes.querySelectorAll("input")[i].value = key;
-                }
-              }
-        } else {
-            remainingGuess -= 1;
-            wrongLetters.push(key);
+    if (selectedRandomWord.includes(key)) {
+      for (let i = 0; i < selectedRandomWord.length; i++) {
+        if (selectedRandomWord[i] === key) {
+          displayUserInput.style.color = "lightgreen"
+          boxes.querySelectorAll("input")[i].value = key;
+          correctLetters.push(key);
+          console.log(correctLetters);
         }
+      }
     } else {
-        alert("Game Over! You dont have remaining guess.");
-        for (let i = 0; i < selectedRandomWord.length; i++) {
-            boxes.querySelectorAll("input")[i].value = selectedRandomWord[i];
-        }
-        displayUserInput.innerHTML = "";
+        displayUserInput.style.color = "red";
+        wrongLetters.push(key);
+        remainingGuess--;
     }
 
-      guess.innerHTML = `
+    setTimeout(() => {
+        if (correctLetters.length === selectedRandomWord.length) {
+          alert(`Congratulations! You guessed the word ${selectedRandomWord}.`);
+          correctLetters.length = 0;
+          generateRandomWord();
+        } else {
+            if (remainingGuess < 1) {
+                alert(`Game over! You dont have remaining guesses. Click "OK" to see the correct answer.`);
+                for (let i = 0; i < selectedRandomWord.length; i++) {
+                  boxes.querySelectorAll("input")[i].value =
+                    selectedRandomWord[i];
+                }
+                displayUserInput.innerHTML = "";
+            }
+        }
+    })
+
+    guess.innerHTML = `
     <p>Hint:</p> ${selectedRandomWordHint} <br>
     <p>Remaining Guess:</p> ${remainingGuess} <br>
     <p>Wrong Letters:</p> ${wrongLetters.join(" ")}
