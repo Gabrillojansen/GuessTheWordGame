@@ -44,7 +44,7 @@ function generateRandomWord() {
 
     let html = "";
     for (let i = 0; i < selectedRandomWord.length; i++) {
-        html += '<input type="text" disabled>'
+        html += '<input type="text" disabled>';
     }
     boxes.innerHTML = html;
 
@@ -64,22 +64,24 @@ function initGame(event) {
 
     if (remainingGuess > 0 ) {
         if (selectedRandomWord.includes(key)) {
-            for (let i = 0; i < selectedRandomWord.length; i++) {
+              for (let i = 0; i < selectedRandomWord.length; i++) {
                 if (selectedRandomWord[i] === key) {
-                    boxes.querySelectorAll("input")[i].value = key;
+                  boxes.querySelectorAll("input")[i].value = key;
                 }
-            }
+              }
         } else {
             remainingGuess -= 1;
             wrongLetters.push(key);
         }
     } else {
+        alert("Game Over! You dont have remaining guess.");
         for (let i = 0; i < selectedRandomWord.length; i++) {
             boxes.querySelectorAll("input")[i].value = selectedRandomWord[i];
         }
+        displayUserInput.innerHTML = "";
     }
 
-    guess.innerHTML = `
+      guess.innerHTML = `
     <p>Hint:</p> ${selectedRandomWordHint} <br>
     <p>Remaining Guess:</p> ${remainingGuess} <br>
     <p>Wrong Letters:</p> ${wrongLetters.join(" ")}
